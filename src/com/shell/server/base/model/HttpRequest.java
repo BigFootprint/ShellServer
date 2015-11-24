@@ -1,11 +1,16 @@
 package com.shell.server.base.model;
 
+import com.shell.server.base.utils.CollectionUtils;
+
+import java.util.Map;
+
 /**
  * Created by liquanmin on 15/11/24.
  */
 public class HttpRequest {
     private String requestUrl;
-    private Method method;
+    private ProtocolHeader protocolHeader;
+    private Map<String, String> headersMap;
 
     public enum Method {
         GET("GET"),
@@ -29,11 +34,26 @@ public class HttpRequest {
         this.requestUrl = requestUrl;
     }
 
-    public void setMethod(String method) {
-
+    public ProtocolHeader getProtocolHeader() {
+        return protocolHeader;
     }
 
-    public Method getMethod() {
-        return method;
+    public void setProtocolHeader(ProtocolHeader protocolHeader) {
+        this.protocolHeader = protocolHeader;
+    }
+
+    public Map<String, String> getHeadersMap() {
+        return headersMap;
+    }
+
+    public void setHeadersMap(Map<String, String> headersMap) {
+        this.headersMap = headersMap;
+    }
+
+    public String getHeader(String headerKey) {
+        if (CollectionUtils.isMapEmpty(headersMap))
+            return "";
+
+        return headersMap.get(headerKey);
     }
 }

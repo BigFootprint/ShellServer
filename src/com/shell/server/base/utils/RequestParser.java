@@ -1,8 +1,14 @@
 package com.shell.server.base.utils;
 
 import com.shell.server.base.model.HttpRequest;
+import com.shell.server.base.model.ProtocolHeader;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by liquanmin on 15/11/24.
@@ -10,7 +16,64 @@ import java.io.InputStream;
 public class RequestParser {
     public static HttpRequest parseRequest(InputStream inputStream) {
         HttpRequest httpRequest = new HttpRequest();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        StringBuilder sb = new StringBuilder();
 
-        return null;
+        String line = null;
+        try {
+            line = reader.readLine();
+            if (StringUtils.isEmpty(line)) {
+                //解析协议行
+                httpRequest.setProtocolHeader(parseProtocolHeader(line));
+            }
+
+            Map<String, String> headerMap = new HashMap<String, String>();
+            while (!StringUtils.isEmpty(line = reader.readLine())) {
+                //解析Header
+                String strs[] = line.split(": ");
+                if (strs.length != 2)
+                    continue;
+
+                headerMap.put(strs[0], strs[1]);
+            }
+
+            httpRequest.setHeadersMap(headerMap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Log.i("============[Raw request]=============");
+        Log.i(sb.toString());
+        Log.i("============[Raw request]=============");
+        return httpRequest;
+    }
+
+    private static ProtocolHeader parseProtocolHeader(String headerLine) {
+        ProtocolHeader protocolHeader = new ProtocolHeader();
+        String[] strs = headerLine.split(" ");
+
+        HttpRequest.Method method = null;
+        if (strs[0].equalsIgnoreCase("get")) {
+            method = HttpRequest.Method.GET;
+        } else if (strs[0].equalsIgnoreCase("post")) {
+            method = HttpRequest.Method.POST;
+        } else if (strs[0].equalsIgnoreCase("put")) {
+            method = HttpRequest.Method.PUT;
+        } else if (strs[0].equalsIgnoreCase("delete")) {
+            method = HttpRequest.Method.DELETE;
+        } else if (strs[0].equalsIgnoreCase("trace")) {
+            method = HttpRequest.Method.TRACE;
+        }
+
+        protocolHeader.setMethod(method);
+        protocolHeader.setPath(strs[1]);
+        protocolHeader.setProtocol(strs[2]);
+        return protocolHeader;
     }
 }

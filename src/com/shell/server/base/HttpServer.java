@@ -44,6 +44,7 @@ public class HttpServer {
                 getServlet().service(httpRequest, httpResponse);
 
                 ResponseWriter.writeResponseToStream(httpResponse, output);
+                socket.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
