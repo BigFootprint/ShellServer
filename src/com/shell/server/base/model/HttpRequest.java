@@ -12,20 +12,6 @@ public class HttpRequest {
     private ProtocolHeader protocolHeader;
     private Map<String, String> headersMap;
 
-    public enum Method {
-        GET("GET"),
-        POST("POST"),
-        DELETE("DELETE"),
-        PUT("PUT"),
-        TRACE("TRACE");
-
-        private String methodName = "";
-
-        Method(String methodName) {
-            this.methodName = methodName;
-        }
-    }
-
     public String getRequestUrl() {
         return requestUrl;
     }

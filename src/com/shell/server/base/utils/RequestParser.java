@@ -1,5 +1,6 @@
 package com.shell.server.base.utils;
 
+import com.shell.server.base.constants.HttpMethod;
 import com.shell.server.base.model.HttpRequest;
 import com.shell.server.base.model.ProtocolHeader;
 
@@ -40,17 +41,8 @@ public class RequestParser {
             httpRequest.setHeadersMap(headerMap);
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
-        Log.i("============[Raw request]=============");
-        Log.i(sb.toString());
-        Log.i("============[Raw request]=============");
         return httpRequest;
     }
 
@@ -58,17 +50,17 @@ public class RequestParser {
         ProtocolHeader protocolHeader = new ProtocolHeader();
         String[] strs = headerLine.split(" ");
 
-        HttpRequest.Method method = null;
+        HttpMethod method = null;
         if (strs[0].equalsIgnoreCase("get")) {
-            method = HttpRequest.Method.GET;
+            method = HttpMethod.GET;
         } else if (strs[0].equalsIgnoreCase("post")) {
-            method = HttpRequest.Method.POST;
+            method = HttpMethod.POST;
         } else if (strs[0].equalsIgnoreCase("put")) {
-            method = HttpRequest.Method.PUT;
+            method = HttpMethod.PUT;
         } else if (strs[0].equalsIgnoreCase("delete")) {
-            method = HttpRequest.Method.DELETE;
+            method = HttpMethod.DELETE;
         } else if (strs[0].equalsIgnoreCase("trace")) {
-            method = HttpRequest.Method.TRACE;
+            method = HttpMethod.TRACE;
         }
 
         protocolHeader.setMethod(method);

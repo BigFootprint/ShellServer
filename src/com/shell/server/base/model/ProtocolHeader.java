@@ -1,18 +1,20 @@
 package com.shell.server.base.model;
 
+import com.shell.server.base.constants.HttpMethod;
+
 /**
  * Created by liquanmin on 15/11/24.
  */
 public class ProtocolHeader {
-    private HttpRequest.Method method;
+    private HttpMethod method;
     private String path;
     private String protocol;
 
-    public HttpRequest.Method getMethod() {
+    public HttpMethod getMethod() {
         return method;
     }
 
-    public void setMethod(HttpRequest.Method method) {
+    public void setMethod(HttpMethod method) {
         this.method = method;
     }
 

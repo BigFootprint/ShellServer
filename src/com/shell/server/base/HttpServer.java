@@ -24,16 +24,16 @@ public class HttpServer {
     private Servlet servlet;
 
     public boolean startUp() {
+        Socket socket = null;
+        InputStream input = null;
+        OutputStream output = null;
+
         try {
             Log.i("Server starting...");
             /* 第二个参数表示客户端连接请求的队列长度 */
             serverSocket = new ServerSocket(ServerConfig.PORT, 1, InetAddress.getByName("127.0.0.1"));
             Log.i("Server started !");
             while (!shutDown) {
-                Socket socket = null;
-                InputStream input = null;
-                OutputStream output = null;
-
                 socket = serverSocket.accept();
                 input = socket.getInputStream();
                 output = socket.getOutputStream();
@@ -44,13 +44,28 @@ public class HttpServer {
                 getServlet().service(httpRequest, httpResponse);
 
                 ResponseWriter.writeResponseToStream(httpResponse, output);
-                socket.close();
+
+                try {
+                    input.close();
+                    output.close();
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("Server stoped for : " + e.toString());
             shutDown(1);
             return false;
+        } finally {
+            try {
+                input.close();
+                output.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         shutDown(0);
         return true;
